@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Dante Quotes</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap');
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+
+    color: white;
+
+    font-family: 'Cinzel', Georgia, serif;
+
+    overflow: hidden;
+}
+
+
+#dante-quote-box {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 20px 28px;
+
+    background: transparent;
+
+    border: 1px solid rgba(255,255,255,0.35);
+
+    border-radius: 12px;
+
+    transition: opacity 0.7s ease;
+
+}
+
+
+#dante-quote {
+
+    margin: 0;
+
+    text-align: left;
+
+    font-size: 20px;
+
+    line-height: 1.55;
+
+    font-weight: 400;
+
+    letter-spacing: 0.2px;
+
+    text-shadow:
+        1px 1px 3px rgba(0,0,0,0.9),
+        0 0 6px rgba(0,0,0,0.7);
+
+}
+
+
+#dante-source {
+
+    display: block;
+
+    margin-top: 14px;
+
+    text-align: right;
+
+    font-size: 15px;
+
+    line-height: 1.3;
+
+    font-weight: 500;
+
+    white-space: nowrap;
+
+    text-shadow:
+        1px 1px 3px rgba(0,0,0,0.9),
+        0 0 5px rgba(0,0,0,0.7);
+
+}
+
+
+@media (max-width: 700px) {
+
+    #dante-quote-box {
+
+        padding: 16px 20px;
+
+    }
+
+    #dante-quote {
+
+        font-size: 17px;
+
+        line-height: 1.5;
+
+    }
+
+    #dante-source {
+
+        font-size: 13px;
+
+        margin-top: 12px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div id="dante-quote-box">
+
+    <div id="dante-quote"></div>
+
+    <div id="dante-source"></div>
+
+</div>
+
+
+<script>
+
+const quotes = [
+
+[
+"...the circle of Judas. That is the deepest place, and the darkest, and the furthest from that Heaven that surrounds all things: I know the way well.",
+"— Virgil, Canto IX:1-33"
+],
+
+[
+"Midway upon the journey of our life, I found myself within a dark wood, for the straight path had been lost.",
+"— Dante, Canto I"
+],
+
+[
+"How difficult it is to describe that savage, harsh, and formidable wood, which in thought renews the fear!",
+"— Dante, Canto I"
+],
+
+[
+"So bitter was it that death is scarcely more bitter; but to speak of the good that I found there, I will tell of the other things I saw.",
+"— Dante, Canto I"
+],
+
+[
+"I cannot clearly say how I entered it, for at that moment I was so full of sleep that I abandoned the true way.",
+"— Dante, Canto I"
+],
+
+[
+"Then I was seized by fear, and looking upward I saw the hill clothed already in the rays of the sun.",
+"— Dante, Canto I"
+],
+
+[
+"And you, why do you return to such misery? Why do you not climb the delightful mountain?",
+"— Virgil, Canto I"
+],
+
+[
+"You must follow another road if you wish to escape from this savage place.",
+"— Virgil, Canto I"
+],
+
+[
+"Do not fear; I will be your guide, and I shall lead you through an eternal place where you will hear the desperate cries of souls.",
+"— Virgil, Canto I"
+],
+
+[
+"Through me one goes into the city of suffering; through me one goes into eternal pain; through me one goes among the lost.",
+"— Inscription on the Gate of Hell, Canto III"
+],
+
+[
+"Justice moved the maker of my form; divine power made me, supreme wisdom, and primal love.",
+"— Inscription on the Gate of Hell, Canto III"
+],
+
+[
+"Before me nothing was created except eternal things, and I endure eternally.",
+"— Inscription on the Gate of Hell, Canto III"
+],
+
+[
+"Abandon every hope, you who enter.",
+"— Inscription on the Gate of Hell, Canto III"
+],
+
+[
+"Here, as far as I could hear, there were no words, but only sighs, cries, and terrible wails resounding through the starless air.",
+"— Dante, Canto III"
+],
+
+[
+"The souls who lived without disgrace or praise were here, mingled with that wicked company of angels who were neither rebellious nor faithful to God.",
+"— Virgil, Canto III"
+],
+
+[
+"They are not worthy of speaking of them; look and pass on.",
+"— Virgil, Canto III"
+],
+
+[
+"These wretched ones, who were never truly alive, were naked and constantly stung by flies and wasps.",
+"— Dante, Canto III"
+],
+
+[
+"The blood and tears that fell from their faces were gathered at their feet by disgusting worms.",
+"— Dante, Canto III"
+],
+
+[
+"There is no greater sorrow than remembering a happy time in misery.",
+"— Francesca, Canto V"
+],
+
+[
+"Love, which swiftly takes hold of the gentle heart, seized him with the beauty of my body, which was taken from me.",
+"— Francesca, Canto V"
+],
+
+[
+"Love, which excuses no beloved from loving in return, seized me so strongly with his love that, as you see, he has not left me.",
+"— Francesca, Canto V"
+],
+
+[
+"Love led us both to one death; Caina awaits the one who extinguished our life.",
+"— Francesca, Canto V"
+],
+
+[
+"The book was our go-between, and its author was also our accomplice; that day we read no farther.",
+"— Francesca, Canto V"
+],
+
+[
+"And I fell as a dead body falls.",
+"— Dante, Canto V"
+],
+
+[
+"Cerberus, savage and monstrous beast, with three throats barks like a dog over the people submerged beneath the rain.",
+"— Dante, Canto VI"
+],
+
+[
+"The eternal, accursed, cold, and heavy rain falls upon the souls of the gluttonous.",
+"— Dante, Canto VI"
+],
+
+[
+"Great hail, filthy water, and snow pour down through the dark air.",
+"— Dante, Canto VI"
+],
+
+[
+"The place below is the lowest, darkest, and farthest from the Heaven that encompasses all things.",
+"— Virgil, Canto IX"
+],
+
+[
+"The city of Dis is not reached without passing through great suffering.",
+"— Virgil, Canto IX"
+],
+
+[
+"You must arm yourself with courage, for this is the place where you must descend.",
+"— Virgil, Canto IX"
+],
+
+[
+"My teacher, my master, and my author, you alone are he from whom I learned the beautiful style that has brought me honor.",
+"— Dante, Canto I"
+],
+
+[
+"We were men, and now we have been made into trees.",
+"— Pier delle Vigne, Canto XIII"
+],
+
+[
+"My mind, moved by a bitter disdain, believed that death would free me from disgrace.",
+"— Pier delle Vigne, Canto XIII"
+],
+
+[
+"I was the keeper of both keys to Frederick's heart, turning them gently to lock and unlock as I wished.",
+"— Pier delle Vigne, Canto XIII"
+],
+
+[
+"My soul, out of contempt for life, made me unjust to myself.",
+"— Pier delle Vigne, Canto XIII"
+],
+
+[
+"Consider your origin: you were not made to live like brutes, but to pursue virtue and knowledge.",
+"— Ulysses, Canto XXVI"
+],
+
+[
+"O brothers, who through a hundred thousand dangers have reached the West, do not deny yourselves the experience of the world beyond.",
+"— Ulysses, Canto XXVI"
+],
+
+[
+"Consider your origin and your birth; you were made to follow virtue and knowledge.",
+"— Ulysses, Canto XXVI"
+],
+
+[
+"I set out upon the open sea with a small company, and we trusted ourselves to the unknown world.",
+"— Ulysses, Canto XXVI"
+],
+
+[
+"Five times the light beneath the moon had been rekindled and as many times extinguished since we had entered upon our difficult voyage.",
+"— Ulysses, Canto XXVI"
+],
+
+[
+"Then we saw a mountain rising from the sea, dark and distant, which had never before appeared to us.",
+"— Ulysses, Canto XXVI"
+],
+
+[
+"Three times the whirlpool made the ship spin with all the waters around it; the fourth time the stern rose upward and the prow plunged down.",
+"— Ulysses, Canto XXVI"
+],
+
+[
+"Until the sea closed over us.",
+"— Ulysses, Canto XXVI"
+],
+
+[
+"You wish me to renew the desperate sorrow that tears my heart merely by thinking of it.",
+"— Count Ugolino, Canto XXXIII"
+],
+
+[
+"That one was Archbishop Ruggieri, and now I shall tell you what hunger did to me.",
+"— Count Ugolino, Canto XXXIII"
+],
+
+[
+"I heard my sons asking for bread.",
+"— Count Ugolino, Canto XXXIII"
+],
+
+[
+"My children were innocent, and yet they were made to suffer for the hatred of their father.",
+"— Count Ugolino, Canto XXXIII"
+],
+
+[
+"I saw four faces before me, and grief overcame me as I understood what fate awaited us.",
+"— Count Ugolino, Canto XXXIII"
+],
+
+[
+"The banners of the King of Hell advance toward us; behold him now, and see how terrible he is.",
+"— Virgil, Canto XXXIV"
+],
+
+[
+"How great a marvel it seemed to me to see three faces upon his head, each of a different color.",
+"— Dante, Canto XXXIV"
+],
+
+[
+"The creature who was once beautiful now stands before us, and he is the source of all our misery.",
+"— Dante, Canto XXXIV"
+],
+
+[
+"If he was once as beautiful as he is now hideous, and if he raised his eyes against his Maker, he is rightly the source of every sorrow.",
+"— Dante, Canto XXXIV"
+],
+
+[
+"His wings were broad enough for a great bird, but they had no feathers; they were like those of a bat.",
+"— Dante, Canto XXXIV"
+],
+
+[
+"With every beat of his wings, Lucifer created three winds, which froze the waters around him.",
+"— Dante, Canto XXXIV"
+],
+
+[
+"The ice of Cocytus was not water but glass, and the souls of the traitors were imprisoned within it.",
+"— Dante, Canto XXXIV"
+],
+
+[
+"That soul who suffers the greatest punishment is Judas Iscariot, who has his head inside and his legs outside.",
+"— Virgil, Canto XXXIV"
+],
+
+[
+"The other two are Brutus and Cassius, who hang with their heads downward and suffer in the mouths of Lucifer.",
+"— Virgil, Canto XXXIV"
+],
+
+[
+"You have passed the point toward which all weights are drawn.",
+"— Virgil, Canto XXXIV"
+],
+
+[
+"You have passed the center of the earth.",
+"— Virgil, Canto XXXIV"
+],
+
+[
+"Now you must rise from this place, for the night is returning and we must depart.",
+"— Virgil, Canto XXXIV"
+],
+
+[
+"We climbed upward until we emerged from Hell and once more saw the stars.",
+"— Dante, Canto XXXIV"
+],
+
+[
+"And from there we emerged to see the stars again.",
+"— Dante, Canto XXXIV"
+]
+
+];
+
+
+let current = -1;
+
+
+function showQuote() {
+
+    let next;
+
+    do {
+
+        next = Math.floor(Math.random() * quotes.length);
+
+    } while (next === current && quotes.length > 1);
+
+
+    current = next;
+
+
+    const box =
+        document.getElementById("dante-quote-box");
+
+    const quote =
+        document.getElementById("dante-quote");
+
+    const source =
+        document.getElementById("dante-source");
+
+
+    box.style.opacity = "0";
+
+
+    setTimeout(function() {
+
+        quote.textContent = quotes[current][0];
+
+        source.textContent = quotes[current][1];
+
+        box.style.opacity = "1";
+
+
+        sendHeight();
+
+    }, 700);
+
+}
+
+
+function sendHeight() {
+
+    const height =
+        document.documentElement.scrollHeight;
+
+    window.parent.postMessage({
+
+        type: "danteResize",
+
+        height: height
+
+    }, "*");
+
+}
+
+
+showQuote();
+
+
+setInterval(function() {
+
+    showQuote();
+
+}, 15000);
+
+
+window.addEventListener("resize", sendHeight);
+
+</script>
+
+</body>
+
+</html>
