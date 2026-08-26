@@ -32,7 +32,9 @@ body {
 }
 
 
-/* Main quote box */
+/* =========================
+   DANTE QUOTE BOX
+   ========================= */
 
 #dante-quote-box {
 
@@ -40,24 +42,32 @@ body {
 
     box-sizing: border-box;
 
-    padding: 20px 28px;
+    margin: 0;
+
+    padding: 20px 28px 10px 28px;
 
     background: rgba(25, 35, 50, 0.7);
 
-    border: 1px solid rgba(96, 112, 128, 0.8);
+    border: 2.5px solid #607080;
 
     border-radius: 15px;
+
+    overflow: hidden;
 
     transition: opacity 0.7s ease;
 
 }
 
 
-/* Quote text */
+/* =========================
+   QUOTE
+   ========================= */
 
 #dante-quote {
 
     margin: 0;
+
+    padding: 0;
 
     text-align: left;
 
@@ -76,13 +86,19 @@ body {
 }
 
 
-/* Author / Canto */
+/* =========================
+   CHARACTER / CANTO
+   ========================= */
 
 #dante-source {
 
     display: block;
 
-    margin-top: 14px;
+    width: 100%;
+
+    margin: 14px 0 0 0;
+
+    padding: 0;
 
     text-align: right;
 
@@ -101,7 +117,9 @@ body {
 }
 
 
-/* Fade */
+/* =========================
+   FADE
+   ========================= */
 
 #dante-quote-box.fade-out {
 
@@ -117,13 +135,19 @@ body {
 }
 
 
-/* Smaller screens */
+/* =========================
+   SMALL SCREENS
+   ========================= */
 
 @media (max-width: 700px) {
 
     #dante-quote-box {
 
-        padding: 16px 20px;
+        padding:
+            16px
+            20px
+            10px
+            20px;
 
     }
 
@@ -485,7 +509,9 @@ const quotes = [
 let current = -1;
 
 
-/* Show a random quote */
+/* =========================
+   SHOW QUOTE
+   ========================= */
 
 function showQuote() {
 
@@ -498,7 +524,9 @@ function showQuote() {
                 Math.random() * quotes.length
             );
 
-    } while (
+    }
+
+    while (
         next === current &&
         quotes.length > 1
     );
@@ -528,8 +556,10 @@ function showQuote() {
 
     setTimeout(function() {
 
+
         quote.textContent =
             quotes[current][0];
+
 
         source.textContent =
             quotes[current][1];
@@ -538,21 +568,37 @@ function showQuote() {
         box.style.opacity = "1";
 
 
-        /* Tell Tabliss the new height */
-
         sendHeight();
+
 
     }, 700);
 
 }
 
 
-/* Send the actual content height to Tabliss */
+/* =========================
+   SEND HEIGHT TO TABLISS
+   ========================= */
 
 function sendHeight() {
 
+    const box =
+        document.getElementById(
+            "dante-quote-box"
+        );
+
+
+    /*
+       getBoundingClientRect gives
+       the actual visible height of
+       the quote box including its
+       padding and border.
+    */
+
     const height =
-        document.documentElement.scrollHeight;
+        Math.ceil(
+            box.getBoundingClientRect().height
+        );
 
 
     window.parent.postMessage({
@@ -566,7 +612,9 @@ function sendHeight() {
 }
 
 
-/* Start */
+/* =========================
+   START
+   ========================= */
 
 showQuote();
 
@@ -580,7 +628,7 @@ setInterval(function() {
 }, 15000);
 
 
-/* Resize when the browser/window changes */
+/* Recalculate if window changes */
 
 window.addEventListener(
     "resize",
@@ -588,7 +636,25 @@ window.addEventListener(
 );
 
 
+/*
+   Send height again after fonts
+   finish loading.
+*/
+
+window.addEventListener(
+    "load",
+    function() {
+
+        setTimeout(
+            sendHeight,
+            100
+        );
+
+    }
+);
+
 </script>
+
 
 </body>
 
