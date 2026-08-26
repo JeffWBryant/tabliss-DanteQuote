@@ -14,8 +14,10 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap');
 
+
 html,
 body {
+
     margin: 0;
     padding: 0;
 
@@ -26,10 +28,18 @@ body {
     font-family: 'Cinzel', Georgia, serif;
 
     overflow: hidden;
+
 }
 
 
+/*
+   The box now wraps only the actual text.
+   The iframe itself remains transparent.
+*/
+
 #dante-quote-box {
+
+    display: inline-block;
 
     width: 100%;
 
@@ -37,16 +47,20 @@ body {
 
     padding: 20px 28px;
 
-    background: transparent;
+    background: rgba(25, 35, 50, 0.7);
 
-    border: 1px solid rgba(255,255,255,0.35);
+    border: 1px solid rgba(96, 112, 128, 0.8);
 
-    border-radius: 12px;
+    border-radius: 15px;
 
     transition: opacity 0.7s ease;
 
 }
 
+
+/*
+   Quote
+*/
 
 #dante-quote {
 
@@ -68,6 +82,11 @@ body {
 
 }
 
+
+/*
+   Character / Canto
+   Always on its own line and right aligned.
+*/
 
 #dante-source {
 
@@ -92,6 +111,27 @@ body {
 }
 
 
+/*
+   Fade animation
+*/
+
+#dante-quote-box.fade-out {
+
+    opacity: 0;
+
+}
+
+#dante-quote-box.fade-in {
+
+    opacity: 1;
+
+}
+
+
+/*
+   Smaller screens
+*/
+
 @media (max-width: 700px) {
 
     #dante-quote-box {
@@ -100,6 +140,7 @@ body {
 
     }
 
+
     #dante-quote {
 
         font-size: 17px;
@@ -107,6 +148,7 @@ body {
         line-height: 1.5;
 
     }
+
 
     #dante-source {
 
@@ -125,6 +167,7 @@ body {
 
 <body>
 
+
 <div id="dante-quote-box">
 
     <div id="dante-quote"></div>
@@ -135,6 +178,7 @@ body {
 
 
 <script>
+
 
 const quotes = [
 
@@ -454,67 +498,126 @@ const quotes = [
 let current = -1;
 
 
+/*
+   Pick a random quote.
+   Prevents the same quote from appearing twice in a row.
+*/
+
 function showQuote() {
 
     let next;
 
     do {
 
-        next = Math.floor(Math.random() * quotes.length);
+        next =
+            Math.floor(
+                Math.random() * quotes.length
+            );
 
-    } while (next === current && quotes.length > 1);
+    }
+    while (
+        next === current &&
+        quotes.length > 1
+    );
 
 
     current = next;
 
 
     const box =
-        document.getElementById("dante-quote-box");
+        document.getElementById(
+            "dante-quote-box"
+        );
 
     const quote =
-        document.getElementById("dante-quote");
+        document.getElementById(
+            "dante-quote"
+        );
 
     const source =
-        document.getElementById("dante-source");
+        document.getElementById(
+            "dante-source"
+        );
 
+
+    /*
+       Fade out
+    */
 
     box.style.opacity = "0";
 
 
     setTimeout(function() {
 
-        quote.textContent = quotes[current][0];
 
-        source.textContent = quotes[current][1];
+        /*
+           Change text
+        */
+
+        quote.textContent =
+            quotes[current][0];
+
+        source.textContent =
+            quotes[current][1];
+
+
+        /*
+           Fade back in
+        */
 
         box.style.opacity = "1";
 
 
+        /*
+           Tell parent the new height
+        */
+
         sendHeight();
+
 
     }, 700);
 
 }
 
 
+/*
+   Report the actual height of the
+   quote box to the parent iframe.
+*/
+
 function sendHeight() {
 
+    const box =
+        document.getElementById(
+            "dante-quote-box"
+        );
+
+
     const height =
-        document.documentElement.scrollHeight;
+        box.getBoundingClientRect().height;
+
 
     window.parent.postMessage({
 
         type: "danteResize",
 
-        height: height
+        height: Math.ceil(height)
 
     }, "*");
 
 }
 
 
+/*
+   Start immediately
+*/
+
 showQuote();
 
+
+/*
+   Change quote every 15 seconds
+*/
 
 setInterval(function() {
 
@@ -523,7 +626,15 @@ setInterval(function() {
 }, 15000);
 
 
-window.addEventListener("resize", sendHeight);
+/*
+   Recalculate if the window changes size
+*/
+
+window.addEventListener(
+    "resize",
+    sendHeight
+);
+
 
 </script>
 
