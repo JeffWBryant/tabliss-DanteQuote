@@ -32,14 +32,9 @@ body {
 }
 
 
-/*
-   The box now wraps only the actual text.
-   The iframe itself remains transparent.
-*/
+/* Main quote box */
 
 #dante-quote-box {
-
-    display: inline-block;
 
     width: 100%;
 
@@ -58,9 +53,7 @@ body {
 }
 
 
-/*
-   Quote
-*/
+/* Quote text */
 
 #dante-quote {
 
@@ -83,10 +76,7 @@ body {
 }
 
 
-/*
-   Character / Canto
-   Always on its own line and right aligned.
-*/
+/* Author / Canto */
 
 #dante-source {
 
@@ -111,15 +101,14 @@ body {
 }
 
 
-/*
-   Fade animation
-*/
+/* Fade */
 
 #dante-quote-box.fade-out {
 
     opacity: 0;
 
 }
+
 
 #dante-quote-box.fade-in {
 
@@ -128,9 +117,7 @@ body {
 }
 
 
-/*
-   Smaller screens
-*/
+/* Smaller screens */
 
 @media (max-width: 700px) {
 
@@ -498,10 +485,7 @@ const quotes = [
 let current = -1;
 
 
-/*
-   Pick a random quote.
-   Prevents the same quote from appearing twice in a row.
-*/
+/* Show a random quote */
 
 function showQuote() {
 
@@ -514,8 +498,7 @@ function showQuote() {
                 Math.random() * quotes.length
             );
 
-    }
-    while (
+    } while (
         next === current &&
         quotes.length > 1
     );
@@ -540,19 +523,10 @@ function showQuote() {
         );
 
 
-    /*
-       Fade out
-    */
-
     box.style.opacity = "0";
 
 
     setTimeout(function() {
-
-
-        /*
-           Change text
-        */
 
         quote.textContent =
             quotes[current][0];
@@ -561,63 +535,43 @@ function showQuote() {
             quotes[current][1];
 
 
-        /*
-           Fade back in
-        */
-
         box.style.opacity = "1";
 
 
-        /*
-           Tell parent the new height
-        */
+        /* Tell Tabliss the new height */
 
         sendHeight();
-
 
     }, 700);
 
 }
 
 
-/*
-   Report the actual height of the
-   quote box to the parent iframe.
-*/
+/* Send the actual content height to Tabliss */
 
 function sendHeight() {
 
-    const box =
-        document.getElementById(
-            "dante-quote-box"
-        );
-
-
     const height =
-        box.getBoundingClientRect().height;
+        document.documentElement.scrollHeight;
 
 
     window.parent.postMessage({
 
         type: "danteResize",
 
-        height: Math.ceil(height)
+        height: height
 
     }, "*");
 
 }
 
 
-/*
-   Start immediately
-*/
+/* Start */
 
 showQuote();
 
 
-/*
-   Change quote every 15 seconds
-*/
+/* Change quote every 15 seconds */
 
 setInterval(function() {
 
@@ -626,9 +580,7 @@ setInterval(function() {
 }, 15000);
 
 
-/*
-   Recalculate if the window changes size
-*/
+/* Resize when the browser/window changes */
 
 window.addEventListener(
     "resize",
