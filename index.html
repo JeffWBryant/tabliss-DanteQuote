@@ -32,9 +32,9 @@ body {
 }
 
 
-/* =========================
-   QUOTE BOX
-   ========================= */
+/* ==============================
+   DANTE QUOTE BOX
+   ============================== */
 
 #dante-quote-box {
 
@@ -42,7 +42,7 @@ body {
 
     box-sizing: border-box;
 
-    padding: 20px 28px;
+    padding: 20px 28px 24px 28px;
 
     background: rgba(25, 35, 50, 0.7);
 
@@ -55,9 +55,9 @@ body {
 }
 
 
-/* =========================
+/* ==============================
    QUOTE
-   ========================= */
+   ============================== */
 
 #dante-quote {
 
@@ -80,9 +80,9 @@ body {
 }
 
 
-/* =========================
+/* ==============================
    CHARACTER / CANTO
-   ========================= */
+   ============================== */
 
 #dante-source {
 
@@ -107,15 +107,26 @@ body {
 }
 
 
-/* =========================
+/* ==============================
+   FADE
+   ============================== */
+
+#dante-quote-box.fade-out {
+
+    opacity: 0;
+
+}
+
+
+/* ==============================
    MOBILE
-   ========================= */
+   ============================== */
 
 @media (max-width: 700px) {
 
     #dante-quote-box {
 
-        padding: 16px 20px;
+        padding: 16px 20px 20px 20px;
 
     }
 
@@ -479,14 +490,14 @@ const quotes = [
 
 
 /* =========================================================
-   QUOTE STATE
+   CURRENT QUOTE
    ========================================================= */
 
 let current = -1;
 
 
 /* =========================================================
-   SEND ACTUAL CONTENT HEIGHT TO TABLISS
+   SEND HEIGHT TO TABLISS
    ========================================================= */
 
 function sendHeight() {
@@ -498,21 +509,49 @@ function sendHeight() {
 
 
     /*
-       getBoundingClientRect() gives us the actual
-       rendered height of the quote box.
+       Measure the actual rendered quote box.
     */
 
-    const height =
-        Math.ceil(box.getBoundingClientRect().height);
+    const boxHeight =
+        Math.ceil(
+            box.getBoundingClientRect().height
+        );
 
 
     /*
-       Add 4px of safety space so the bottom of the
-       source line can never be clipped by the iframe.
+       Also measure the document itself.
+    */
+
+    const bodyHeight =
+        Math.ceil(
+            document.body.scrollHeight
+        );
+
+
+    const documentHeight =
+        Math.ceil(
+            document.documentElement.scrollHeight
+        );
+
+
+    /*
+       Use whichever measurement is largest.
+    */
+
+    const height =
+        Math.max(
+            boxHeight,
+            bodyHeight,
+            documentHeight
+        );
+
+
+    /*
+       Safety buffer.
     */
 
     const finalHeight =
-        height + 4;
+        height + 12;
 
 
     window.parent.postMessage({
@@ -527,7 +566,7 @@ function sendHeight() {
 
 
 /* =========================================================
-   RANDOM QUOTE
+   DISPLAY RANDOM QUOTE
    ========================================================= */
 
 function showQuote() {
@@ -588,8 +627,7 @@ function showQuote() {
 
 
         /*
-           Measure again after the browser has
-           completed layout.
+           Measure after browser layout.
         */
 
         requestAnimationFrame(function() {
@@ -600,15 +638,35 @@ function showQuote() {
 
 
         /*
-           And once more after the fade transition.
-           This catches any delayed font/layout changes.
+           Measure after font/layout rendering.
         */
 
         setTimeout(function() {
 
             sendHeight();
 
-        }, 750);
+        }, 100);
+
+
+        setTimeout(function() {
+
+            sendHeight();
+
+        }, 500);
+
+
+        setTimeout(function() {
+
+            sendHeight();
+
+        }, 1000);
+
+
+        setTimeout(function() {
+
+            sendHeight();
+
+        }, 2000);
 
 
     }, 700);
@@ -617,8 +675,14 @@ function showQuote() {
 
 
 /* =========================================================
-   WATCH FOR ANY SIZE CHANGE
+   RESIZE OBSERVER
    ========================================================= */
+
+const quoteBox =
+    document.getElementById(
+        "dante-quote-box"
+    );
+
 
 const resizeObserver =
     new ResizeObserver(function() {
@@ -629,15 +693,40 @@ const resizeObserver =
 
 
 resizeObserver.observe(
-    document.getElementById("dante-quote-box")
+    quoteBox
 );
 
 
 /* =========================================================
-   INITIALIZATION
+   START
    ========================================================= */
 
 showQuote();
+
+
+/* =========================================================
+   EXTRA INITIAL MEASUREMENTS
+   ========================================================= */
+
+setTimeout(
+    sendHeight,
+    100
+);
+
+setTimeout(
+    sendHeight,
+    500
+);
+
+setTimeout(
+    sendHeight,
+    1000
+);
+
+setTimeout(
+    sendHeight,
+    2000
+);
 
 
 /* =========================================================
@@ -677,7 +766,7 @@ if (document.fonts) {
 
 
 /* =========================================================
-   EXTRA INITIAL MEASUREMENTS
+   PAGE LOAD
    ========================================================= */
 
 window.addEventListener(
@@ -694,7 +783,6 @@ window.addEventListener(
 
     }
 );
-
 
 </script>
 
