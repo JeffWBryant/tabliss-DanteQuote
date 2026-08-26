@@ -33,7 +33,7 @@ body {
 
 
 /* =========================
-   DANTE QUOTE BOX
+   QUOTE BOX
    ========================= */
 
 #dante-quote-box {
@@ -42,17 +42,13 @@ body {
 
     box-sizing: border-box;
 
-    margin: 0;
-
-    padding: 20px 28px 10px 28px;
+    padding: 20px 28px;
 
     background: rgba(25, 35, 50, 0.7);
 
     border: 2.5px solid #607080;
 
     border-radius: 15px;
-
-    overflow: hidden;
 
     transition: opacity 0.7s ease;
 
@@ -66,8 +62,6 @@ body {
 #dante-quote {
 
     margin: 0;
-
-    padding: 0;
 
     text-align: left;
 
@@ -94,11 +88,7 @@ body {
 
     display: block;
 
-    width: 100%;
-
-    margin: 14px 0 0 0;
-
-    padding: 0;
+    margin-top: 14px;
 
     text-align: right;
 
@@ -118,36 +108,14 @@ body {
 
 
 /* =========================
-   FADE
-   ========================= */
-
-#dante-quote-box.fade-out {
-
-    opacity: 0;
-
-}
-
-
-#dante-quote-box.fade-in {
-
-    opacity: 1;
-
-}
-
-
-/* =========================
-   SMALL SCREENS
+   MOBILE
    ========================= */
 
 @media (max-width: 700px) {
 
     #dante-quote-box {
 
-        padding:
-            16px
-            20px
-            10px
-            20px;
+        padding: 16px 20px;
 
     }
 
@@ -190,6 +158,10 @@ body {
 
 <script>
 
+
+/* =========================================================
+   QUOTES
+   ========================================================= */
 
 const quotes = [
 
@@ -506,16 +478,62 @@ const quotes = [
 ];
 
 
+/* =========================================================
+   QUOTE STATE
+   ========================================================= */
+
 let current = -1;
 
 
-/* =========================
-   SHOW QUOTE
-   ========================= */
+/* =========================================================
+   SEND ACTUAL CONTENT HEIGHT TO TABLISS
+   ========================================================= */
+
+function sendHeight() {
+
+    const box =
+        document.getElementById("dante-quote-box");
+
+    if (!box) return;
+
+
+    /*
+       getBoundingClientRect() gives us the actual
+       rendered height of the quote box.
+    */
+
+    const height =
+        Math.ceil(box.getBoundingClientRect().height);
+
+
+    /*
+       Add 4px of safety space so the bottom of the
+       source line can never be clipped by the iframe.
+    */
+
+    const finalHeight =
+        height + 4;
+
+
+    window.parent.postMessage({
+
+        type: "danteResize",
+
+        height: finalHeight
+
+    }, "*");
+
+}
+
+
+/* =========================================================
+   RANDOM QUOTE
+   ========================================================= */
 
 function showQuote() {
 
     let next;
+
 
     do {
 
@@ -536,19 +554,13 @@ function showQuote() {
 
 
     const box =
-        document.getElementById(
-            "dante-quote-box"
-        );
+        document.getElementById("dante-quote-box");
 
     const quote =
-        document.getElementById(
-            "dante-quote"
-        );
+        document.getElementById("dante-quote");
 
     const source =
-        document.getElementById(
-            "dante-source"
-        );
+        document.getElementById("dante-source");
 
 
     box.style.opacity = "0";
@@ -568,7 +580,35 @@ function showQuote() {
         box.style.opacity = "1";
 
 
+        /*
+           Measure immediately.
+        */
+
         sendHeight();
+
+
+        /*
+           Measure again after the browser has
+           completed layout.
+        */
+
+        requestAnimationFrame(function() {
+
+            sendHeight();
+
+        });
+
+
+        /*
+           And once more after the fade transition.
+           This catches any delayed font/layout changes.
+        */
+
+        setTimeout(function() {
+
+            sendHeight();
+
+        }, 750);
 
 
     }, 700);
@@ -576,50 +616,33 @@ function showQuote() {
 }
 
 
-/* =========================
-   SEND HEIGHT TO TABLISS
-   ========================= */
+/* =========================================================
+   WATCH FOR ANY SIZE CHANGE
+   ========================================================= */
 
-function sendHeight() {
+const resizeObserver =
+    new ResizeObserver(function() {
 
-    const box =
-        document.getElementById(
-            "dante-quote-box"
-        );
+        sendHeight();
 
-
-    /*
-       getBoundingClientRect gives
-       the actual visible height of
-       the quote box including its
-       padding and border.
-    */
-
-    const height =
-        Math.ceil(
-            box.getBoundingClientRect().height
-        );
+    });
 
 
-    window.parent.postMessage({
-
-        type: "danteResize",
-
-        height: height
-
-    }, "*");
-
-}
+resizeObserver.observe(
+    document.getElementById("dante-quote-box")
+);
 
 
-/* =========================
-   START
-   ========================= */
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
 
 showQuote();
 
 
-/* Change quote every 15 seconds */
+/* =========================================================
+   CHANGE QUOTE EVERY 15 SECONDS
+   ========================================================= */
 
 setInterval(function() {
 
@@ -628,7 +651,9 @@ setInterval(function() {
 }, 15000);
 
 
-/* Recalculate if window changes */
+/* =========================================================
+   WINDOW RESIZE
+   ========================================================= */
 
 window.addEventListener(
     "resize",
@@ -636,25 +661,42 @@ window.addEventListener(
 );
 
 
-/*
-   Send height again after fonts
-   finish loading.
-*/
+/* =========================================================
+   FONT LOADING
+   ========================================================= */
+
+if (document.fonts) {
+
+    document.fonts.ready.then(function() {
+
+        sendHeight();
+
+    });
+
+}
+
+
+/* =========================================================
+   EXTRA INITIAL MEASUREMENTS
+   ========================================================= */
 
 window.addEventListener(
     "load",
     function() {
 
-        setTimeout(
-            sendHeight,
-            100
-        );
+        sendHeight();
+
+        requestAnimationFrame(function() {
+
+            sendHeight();
+
+        });
 
     }
 );
 
-</script>
 
+</script>
 
 </body>
 
